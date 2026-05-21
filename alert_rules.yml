@@ -1,0 +1,42 @@
+groups:
+  - name: kuva-consumer-bff-alerts
+    rules:
+      - alert: ConsumerBffHighErrorRate
+        expr: sum(rate(http_server_request_duration_seconds_count{job="kuva-consumer-bff", http_response_status_code=~"5.."}[5m])) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+          service: kuva-consumer-bff
+        annotations:
+          summary: "Alta taxa de erro 5xx no Consumer BFF"
+          description: "O Consumer BFF está retornando muitos erros 5xx nos últimos 5 minutos."
+
+      - alert: ConsumerBffHighLatency
+        expr: histogram_quantile(0.95, sum(rate(http_server_request_duration_seconds_bucket{job="kuva-consumer-bff"}[5m])) by (le)) > 2
+        for: 5m
+        labels:
+          severity: warning
+          service: kuva-consumer-bff
+        annotations:
+          summary: "Latência alta no Consumer BFF"
+          description: "P95 de latência acima de 2 segundos."
+
+      - alert: ConsumerBffDownstreamFailures
+        expr: sum(rate(kuva_consumer_bff_downstream_failures_total[5m])) > 0.1
+        for: 5m
+        labels:
+          severity: critical
+          service: kuva-consumer-bff
+        annotations:
+          summary: "Falhas em dependências downstream"
+          description: "O Consumer BFF está enfrentando falhas ao chamar serviços internos."
+
+      - alert: ConsumerBffOrderConfirmFailures
+        expr: sum(rate(kuva_consumer_bff_order_confirm_failures_total[10m])) > 0.05
+        for: 10m
+        labels:
+          severity: critical
+          service: kuva-consumer-bff
+        annotations:
+          summary: "Falhas na confirmação de pedidos"
+          description: "Há falhas recorrentes na confirmação de pedidos do consumidor."
