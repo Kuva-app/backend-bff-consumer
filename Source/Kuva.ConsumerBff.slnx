@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="Kuva.ConsumerBff.Business/Kuva.ConsumerBff.Business.csproj" />
+  <Project Path="Kuva.ConsumerBff.EFMigrations/Kuva.ConsumerBff.EFMigrations.csproj" />
+  <Project Path="Kuva.ConsumerBff.Entities/Kuva.ConsumerBff.Entities.csproj" />
+  <Project Path="Kuva.ConsumerBff.Repository/Kuva.ConsumerBff.Repository.csproj" />
+  <Project Path="Kuva.ConsumerBff.Service/Kuva.ConsumerBff.Service.csproj" />
+  <Project Path="Kuva.ConsumerBff.Tests/Kuva.ConsumerBff.Tests.csproj" />
+</Solution>
