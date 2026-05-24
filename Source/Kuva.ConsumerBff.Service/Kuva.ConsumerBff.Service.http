@@ -1,0 +1,6 @@
+@Kuva.ConsumerBff.Service_HostAddress = http://localhost:0
+
+GET {{Kuva.ConsumerBff.Service_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

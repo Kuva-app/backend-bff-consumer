@@ -1,0 +1,19 @@
+name: Build, Test and Analyze
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: read
+  checks: write
+
+jobs:
+  quality-gate:
+    uses: Kuva-app/kuva-ci/.github/workflows/quality-gate-pr-dotnet.yml@901c713cfa2a608170de64cd76aa0df3d2f63863
+    with:
+      DOTNET_VERSION: 10.0.x
+      SOLUTION_PATH: Source/Kuva.ConsumerBff.slnx
+      SOLUTION_KEY: Kuva-app_backend-bff-consumer
+    secrets: inherit

@@ -1,0 +1,17 @@
+{
+  "Development": {
+    "BaseUrl": "http://localhost:8082",
+    "SqlServer": "localhost,1435",
+    "Database": "KuvaConsumerBff",
+    "Prometheus": "http://localhost:9090",
+    "Grafana": "http://localhost:3000"
+  },
+  "Homologation": {
+    "BaseUrl": "https://api-hml.kuva.com.br/consumer",
+    "Environment": "hml"
+  },
+  "Production": {
+    "BaseUrl": "https://api.kuva.com.br/consumer",
+    "Environment": "prod"
+  }
+}

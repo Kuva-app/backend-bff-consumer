@@ -1,0 +1,20 @@
+name: Deploy to Azure Container Registry
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality-gate:
+    uses: Kuva-app/kuva-ci/.github/workflows/quality-gate-pr-dotnet.yml@3b22ab376ce8ac1bca19f957d5f7b79c7f3d936d
+    with:
+      DOTNET_VERSION: 10.0.x
+      SOLUTION_PATH: Source/Kuva.ConsumerBff.slnx
+      SOLUTION_KEY: Kuva-app_backend-bff-consumer
+    secrets: inherit

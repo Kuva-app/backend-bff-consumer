@@ -1,0 +1,59 @@
+services:
+  kuva-consumer-bff-service:
+    build:
+      context: .
+      dockerfile: Source/Kuva.ConsumerBff.Service/Dockerfile
+    container_name: kuva-consumer-bff-service
+    ports:
+      - "8082:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__ConsumerBffDatabase: Server=sqlserver,1433;Database=KuvaConsumerBff;User Id=sa;Password=Change_this_password_123!;Encrypt=True;TrustServerCertificate=True;
+      DownstreamServices__Auth__BaseUrl: http://mock-auth-service:8080
+      DownstreamServices__Store__BaseUrl: http://mock-store-service:8080
+      DownstreamServices__CatalogPricing__BaseUrl: http://mock-catalog-pricing-service:8080
+      DownstreamServices__Order__BaseUrl: http://mock-order-service:8080
+      DownstreamServices__Media__BaseUrl: http://mock-media-service:8080
+      Jwt__Issuer: kuva-auth
+      Jwt__Audience: kuva-consumer-bff
+      Cors__AllowedOrigins__0: http://localhost:3000
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: kuva-consumer-bff-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Change_this_password_123!"
+    ports:
+      - "1435:1433"
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P Change_this_password_123! -C -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: kuva-consumer-bff-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./alert_rules.yml:/etc/prometheus/alert_rules.yml
+    depends_on:
+      - kuva-consumer-bff-service
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: kuva-consumer-bff-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    depends_on:
+      - prometheus
